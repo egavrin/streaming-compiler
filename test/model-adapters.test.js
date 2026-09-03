@@ -76,6 +76,58 @@ test("OpenAI-compatible adapter exposes choices before the tool JSON is complete
   ]);
 });
 
+test("OpenAI-compatible structured output constrains the current choice enum", async () => {
+  let requestBody;
+  const encoder = new TextEncoder();
+  const adapter = new OpenAICompatibleModelAdapter({
+    apiKey: "test",
+    model: "test-model",
+    semanticProtocol: "single-choice-json-schema",
+    fetchImpl: async (_url, init) => {
+      requestBody = JSON.parse(init.body);
+      return new Response(new ReadableStream({
+        start(controller) {
+          controller.enqueue(encoder.encode(
+            'data: {"choices":[{"delta":{"content":"{\\"choice\\":\\"position_"}}]}\n\n',
+          ));
+          controller.enqueue(encoder.encode(
+            'data: {"choices":[{"delta":{"content":"update\\"}"}}],"usage":{"prompt_tokens":10,"completion_tokens":4,"total_tokens":14}}\n\n',
+          ));
+          controller.enqueue(encoder.encode("data: [DONE]\n\n"));
+          controller.close();
+        },
+      }), { status: 200 });
+    },
+  });
+  const snapshot = {
+    hir: { kind: "hole", type: "statement" },
+    choices: [
+      { id: "position_update", label: "update position", resultType: "statement" },
+      { id: "velocity_update", label: "update velocity", resultType: "statement" },
+    ],
+  };
+  const events = [];
+  for await (const event of adapter.streamSemantic({
+    task: { prompt: "simulate", semantic: { catalog: [] } },
+    snapshot,
+  })) events.push(event);
+  assert.deepEqual(requestBody.response_format.json_schema.schema.properties.choice.enum, [
+    "position_update",
+    "velocity_update",
+  ]);
+  assert.deepEqual(events, [
+    {
+      type: "usage",
+      inputTokens: 10,
+      outputTokens: 4,
+      totalTokens: 14,
+      reasoningTokens: 0,
+      costUsd: 0,
+    },
+    { type: "choice", id: "position_update" },
+  ]);
+});
+
 test("direct adapter uses the canonical DEAL prompt and includes failed source on repair", async () => {
   let requestBody;
   const adapter = new OpenAICompatibleModelAdapter({

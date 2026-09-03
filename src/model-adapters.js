@@ -124,6 +124,7 @@ export class OpenAICompatibleModelAdapter extends ModelAdapter {
     temperature = Number(process.env.DEAL_TEMPERATURE ?? 0),
     seed = Number(process.env.DEAL_SEED ?? 42),
     transientRetries = Number(process.env.DEAL_MODEL_RETRIES ?? 3),
+    semanticProtocol = process.env.DEAL_SEMANTIC_PROTOCOL ?? "batched-trajectory",
   }) {
     super();
     if (!apiKey) throw new Error("an API key is required");
@@ -139,7 +140,7 @@ export class OpenAICompatibleModelAdapter extends ModelAdapter {
     this.temperature = temperature;
     this.seed = seed;
     this.transientRetries = transientRetries;
-    this.semanticProtocol = "batched-trajectory";
+    this.semanticProtocol = semanticProtocol;
   }
 
   async *streamDirect({ task, repairDiagnostics = [], previousSource = "" }) {
@@ -157,6 +158,41 @@ export class OpenAICompatibleModelAdapter extends ModelAdapter {
   }
 
   async *streamSemantic({ task, snapshot, repairDiagnostics = [] }) {
+    if (this.semanticProtocol === "single-choice-json-schema") {
+      const choices = snapshot.choices.map((choice) =>
+        `${JSON.stringify(choice.id)}: ${choice.label}; returns ${choice.resultType}`
+      ).join("\n");
+      const repair = repairDiagnostics.length
+        ? `\nPrevious attempt failed: ${repairDiagnostics.join("; ")}`
+        : "";
+      const messages = [{
+        role: "user",
+        content: `Select exactly one compiler operation for the current typed hole. Do not write code.\nTask: ${task.prompt}\nCurrent partial HIR: ${JSON.stringify(snapshot.hir)}\nAllowed choices:\n${choices}\nReturn one allowed ID.${repair}`,
+      }];
+      const schema = {
+        type: "object",
+        properties: {
+          choice: { type: "string", enum: snapshot.choices.map((choice) => choice.id) },
+        },
+        required: ["choice"],
+        additionalProperties: false,
+      };
+      const parser = new StreamingSingleChoiceParser();
+      for await (const event of this._stream({
+        messages,
+        response_format: {
+          type: "json_schema",
+          json_schema: { name: "select_choice", strict: true, schema },
+        },
+      })) {
+        if (event.type === "text") {
+          for (const id of parser.push(event.delta)) yield { type: "choice", id };
+        } else {
+          yield event;
+        }
+      }
+      return;
+    }
     const choices = snapshot.choices.map((choice) =>
       `${JSON.stringify(choice.id)}: ${choice.label}; ${choice.resultType} <- (${choice.argumentTypes.join(", ")})`
     ).join("\n");

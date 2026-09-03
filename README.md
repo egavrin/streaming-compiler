@@ -147,6 +147,15 @@ node src/cli.js benchmark \
 
 Semantic mode использует streaming tool call `select_choices({choices: string[]})`. Parser аргументов извлекает каждый законченный choice ID ещё до закрытия всего JSON. Stable IDs позволяют модели предложить несколько следующих depth-first решений за один round-trip; compiler применяет longest valid prefix.
 
+Для OpenRouter-моделей с поддержкой strict structured output можно включить тот же
+single-choice protocol, что используется в локальном Ollama:
+
+```bash
+export DEAL_SEMANTIC_PROTOCOL=single-choice-json-schema
+```
+
+Текущий список допустимых choice IDs будет передан как динамический JSON Schema enum.
+
 Чтобы подключить локальный Qwen/Cortex или другой endpoint, достаточно создать adapter от `OpenAICompatibleModelAdapter` с собственными `baseUrl`, `model` и key либо реализовать два async-stream метода `streamDirect()`/`streamSemantic()`. Compiler core и benchmark не зависят от провайдера.
 
 ## Локальный Ollama + Qwen
@@ -197,6 +206,15 @@ Qwen 1.5B; все 80 semantic programs прошли production compile. Лока
 нулю. Semantic использует больше input tokens и round-trips, но в 4–7 раз меньше output
 tokens. Полные latency percentiles, token accounting, family breakdown и protocol ablations
 находятся в [`reports/local-small-model-results.md`](reports/local-small-model-results.md).
+
+### OpenRouter Gemma 4 26B-A4B IT
+
+Чистый live A/B на тех же 40 задачах, без repairs, дал 25/40 functional@1 для direct и
+40/40 для semantic compiler. Semantic достиг compile@1 100%, использовал 10.64 раза меньше
+output tokens и стоил $0.006665 против $0.009569 для direct, но из-за 4.5 последовательных
+strict-enum запросов на задачу был медленнее: mean 8.62 против 7.06 секунды. Полная таблица,
+разбивка по семействам и сравнение с DeepSeek находятся в
+[`reports/gemma-4-26b-a4b-it-results.md`](reports/gemma-4-26b-a4b-it-results.md).
 
 ## Метрики
 
