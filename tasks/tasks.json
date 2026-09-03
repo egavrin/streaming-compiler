@@ -1,0 +1,75 @@
+[
+  {
+    "id": "hello-literal",
+    "prompt": "Print exactly: Hello, DEAL!",
+    "expectedStdout": "Hello, DEAL!",
+    "semantic": {
+      "rootType": "string",
+      "catalog": [
+        { "id": "s_hello", "label": "string literal Hello, DEAL!", "resultType": "string", "node": { "kind": "literal", "value": "Hello, DEAL!" } },
+        { "id": "s_wrong", "label": "string literal Hello", "resultType": "string", "node": { "kind": "literal", "value": "Hello" } },
+        { "id": "concat", "label": "concatenate two strings", "resultType": "string", "argumentTypes": ["string", "string"], "node": { "kind": "binary", "operator": "+" } }
+      ]
+    },
+    "replay": {
+      "semanticChoices": ["s_hello"],
+      "directSource": "import * as console from \"std/console\";\n\nexport function main(): null {\n  console.log(\"Hello, DEAL!\");\n  return null;\n}\n"
+    }
+  },
+  {
+    "id": "string-concat",
+    "prompt": "Construct a string by concatenating 'semantic ' and 'compiler', then print it.",
+    "expectedStdout": "semantic compiler",
+    "semantic": {
+      "rootType": "string",
+      "catalog": [
+        { "id": "concat", "label": "concatenate two strings", "resultType": "string", "argumentTypes": ["string", "string"], "node": { "kind": "binary", "operator": "+" } },
+        { "id": "s_semantic", "label": "string literal semantic followed by a space", "resultType": "string", "node": { "kind": "literal", "value": "semantic " } },
+        { "id": "s_compiler", "label": "string literal compiler", "resultType": "string", "node": { "kind": "literal", "value": "compiler" } },
+        { "id": "s_wrong", "label": "string literal wrong", "resultType": "string", "node": { "kind": "literal", "value": "wrong" } }
+      ]
+    },
+    "replay": {
+      "semanticChoices": ["concat", "s_semantic", "s_compiler"],
+      "directSource": "import * as console from \"std/console\";\n\nexport function main(): null {\n  let value: string = \"semantic \" + \"compiler\";\n  console.log(value);\n  return null;\n}\n"
+    }
+  },
+  {
+    "id": "stdlib-trim",
+    "prompt": "Trim whitespace from the string '  typed  ' using std/string and print the result.",
+    "expectedStdout": "typed",
+    "semantic": {
+      "rootType": "string",
+      "catalog": [
+        { "id": "trim", "label": "call std/string.trim", "resultType": "string", "argumentTypes": ["string"], "node": { "kind": "call", "module": "std/string", "alias": "strings", "function": "trim" } },
+        { "id": "s_padded", "label": "string literal with two spaces around typed", "resultType": "string", "node": { "kind": "literal", "value": "  typed  " } },
+        { "id": "s_typed", "label": "string literal typed", "resultType": "string", "node": { "kind": "literal", "value": "typed" } },
+        { "id": "s_wrong", "label": "string literal untyped", "resultType": "string", "node": { "kind": "literal", "value": "untyped" } }
+      ]
+    },
+    "replay": {
+      "semanticChoices": ["trim", "s_padded"],
+      "directSource": "import * as console from \"std/console\";\nimport * as strings from \"std/string\";\n\nexport function main(): null {\n  console.log(strings.trim(\"  typed  \"));\n  return null;\n}\n"
+    }
+  },
+  {
+    "id": "stdlib-substring",
+    "prompt": "Use std/string.substring to take characters 0 through 6 from 'streaming', then print the result.",
+    "expectedStdout": "stream",
+    "semantic": {
+      "rootType": "string",
+      "catalog": [
+        { "id": "substring", "label": "call std/string.substring", "resultType": "string", "argumentTypes": ["string", "int", "int"], "node": { "kind": "call", "module": "std/string", "alias": "strings", "function": "substring" } },
+        { "id": "s_streaming", "label": "string literal streaming", "resultType": "string", "node": { "kind": "literal", "value": "streaming" } },
+        { "id": "s_wrong", "label": "string literal stream", "resultType": "string", "node": { "kind": "literal", "value": "stream" } },
+        { "id": "i_zero", "label": "integer literal 0", "resultType": "int", "node": { "kind": "literal", "value": 0 } },
+        { "id": "i_six", "label": "integer literal 6", "resultType": "int", "node": { "kind": "literal", "value": 6 } },
+        { "id": "i_nine", "label": "integer literal 9", "resultType": "int", "node": { "kind": "literal", "value": 9 } }
+      ]
+    },
+    "replay": {
+      "semanticChoices": ["substring", "s_streaming", "i_zero", "i_six"],
+      "directSource": "import * as console from \"std/console\";\nimport * as strings from \"std/string\";\n\nexport function main(): null {\n  console.log(strings.substring(\"streaming\", 0, 6));\n  return null;\n}\n"
+    }
+  }
+]

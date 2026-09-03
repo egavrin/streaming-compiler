@@ -1,0 +1,18 @@
+{
+  "name": "streaming-compiler",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "tasks:generate": "node tasks/generate-large-tasks.js",
+    "test": "node --test",
+    "benchmark:replay": "node src/cli.js benchmark --adapter replay --stream",
+    "benchmark:large": "node src/cli.js benchmark --adapter replay --tasks tasks/large-tasks.json --stream",
+    "benchmark:openrouter": "node src/cli.js benchmark --adapter openrouter --stream",
+    "benchmark:ollama": "node src/cli.js benchmark --adapter ollama --stream",
+    "benchmark:local-small": "bash scripts/run-local-small-models.sh"
+  }
+}

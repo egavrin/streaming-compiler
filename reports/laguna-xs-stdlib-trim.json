@@ -1,0 +1,92 @@
+{
+  "generatedAt": "2026-09-03T09:15:52.283Z",
+  "adapter": "openrouter",
+  "model": "poolside/laguna-xs-2.1:free",
+  "streaming": true,
+  "taskPath": "/Users/egavrin/Documents/codex/2026-09-03/referenced-chatgpt-conversation-this-is-an/outputs/deal-semantic-generation/tasks/tasks.json",
+  "summary": {
+    "direct": {
+      "samples": 1,
+      "successes": 0,
+      "compileAt1": 0,
+      "functionalAt1": 0,
+      "syntaxFailures": 3,
+      "semanticFailures": 0,
+      "functionalFailures": 0,
+      "rejectedChoices": 0,
+      "rejectedPrefixes": 0,
+      "repairIterations": 2,
+      "apiRoundTrips": 3,
+      "outputTokens": 137,
+      "neuralDecisionsPerSuccessfulProgram": null,
+      "averageWallClockMs": 4285.283917000001,
+      "averageTimeToFirstValidProgramMs": null
+    },
+    "semantic": {
+      "samples": 1,
+      "successes": 1,
+      "compileAt1": 1,
+      "functionalAt1": 1,
+      "syntaxFailures": 0,
+      "semanticFailures": 0,
+      "functionalFailures": 0,
+      "rejectedChoices": 0,
+      "rejectedPrefixes": 0,
+      "repairIterations": 0,
+      "apiRoundTrips": 1,
+      "outputTokens": 29,
+      "neuralDecisionsPerSuccessfulProgram": 2,
+      "averageWallClockMs": 4217.3084579999995,
+      "averageTimeToFirstValidProgramMs": 4217.307124999999
+    }
+  },
+  "results": [
+    {
+      "taskId": "stdlib-trim",
+      "mode": "direct",
+      "streaming": true,
+      "success": false,
+      "compileAt1": false,
+      "functionalAt1": false,
+      "syntaxFailures": 3,
+      "semanticFailures": 0,
+      "functionalFailures": 0,
+      "rejectedChoices": 0,
+      "rejectedPrefixes": 0,
+      "repairIterations": 2,
+      "apiRoundTrips": 3,
+      "outputTokens": 137,
+      "neuralDecisions": 137,
+      "compilerDecisions": 0,
+      "wallClockMs": 4285.283917000001,
+      "timeToFirstValidProgramMs": null,
+      "source": "import \"std/string\";\nimport \"std/console\";\n\nexport function main(): null {\n    let original = '  typed  ';\n    let trimmed = string.trim(original);\n    console.print(trimmed);\n}\n",
+      "diagnostics": [
+        "E1019: Expected '*' after 'import' (only namespace imports supported) [span 12]",
+        "E1019: Expected '*' after 'import' (only namespace imports supported) [span 13]"
+      ]
+    },
+    {
+      "taskId": "stdlib-trim",
+      "mode": "semantic",
+      "streaming": true,
+      "success": true,
+      "compileAt1": true,
+      "functionalAt1": true,
+      "syntaxFailures": 0,
+      "semanticFailures": 0,
+      "functionalFailures": 0,
+      "rejectedChoices": 0,
+      "rejectedPrefixes": 0,
+      "repairIterations": 0,
+      "apiRoundTrips": 1,
+      "outputTokens": 29,
+      "neuralDecisions": 2,
+      "compilerDecisions": 0,
+      "wallClockMs": 4217.3084579999995,
+      "timeToFirstValidProgramMs": 4217.307124999999,
+      "source": "import * as console from \"std/console\";\nimport * as strings from \"std/string\";\n\nexport function main(): null {\n  console.log(strings.trim(\"  typed  \"));\n  return null;\n}\n",
+      "diagnostics": []
+    }
+  ]
+}

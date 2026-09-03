@@ -1,0 +1,91 @@
+{
+  "generatedAt": "2026-09-03T09:15:33.065Z",
+  "adapter": "openrouter",
+  "model": "poolside/laguna-xs-2.1:free",
+  "streaming": true,
+  "taskPath": "/Users/egavrin/Documents/codex/2026-09-03/referenced-chatgpt-conversation-this-is-an/outputs/deal-semantic-generation/tasks/tasks.json",
+  "summary": {
+    "direct": {
+      "samples": 1,
+      "successes": 0,
+      "compileAt1": 0,
+      "functionalAt1": 0,
+      "syntaxFailures": 3,
+      "semanticFailures": 0,
+      "functionalFailures": 0,
+      "rejectedChoices": 0,
+      "rejectedPrefixes": 0,
+      "repairIterations": 2,
+      "apiRoundTrips": 3,
+      "outputTokens": 105,
+      "neuralDecisionsPerSuccessfulProgram": null,
+      "averageWallClockMs": 5530.531167,
+      "averageTimeToFirstValidProgramMs": null
+    },
+    "semantic": {
+      "samples": 1,
+      "successes": 1,
+      "compileAt1": 1,
+      "functionalAt1": 1,
+      "syntaxFailures": 0,
+      "semanticFailures": 0,
+      "functionalFailures": 0,
+      "rejectedChoices": 0,
+      "rejectedPrefixes": 0,
+      "repairIterations": 0,
+      "apiRoundTrips": 1,
+      "outputTokens": 100,
+      "neuralDecisionsPerSuccessfulProgram": 3,
+      "averageWallClockMs": 8957.242875,
+      "averageTimeToFirstValidProgramMs": 8957.241542
+    }
+  },
+  "results": [
+    {
+      "taskId": "string-concat",
+      "mode": "direct",
+      "streaming": true,
+      "success": false,
+      "compileAt1": false,
+      "functionalAt1": false,
+      "syntaxFailures": 3,
+      "semanticFailures": 0,
+      "functionalFailures": 0,
+      "rejectedChoices": 0,
+      "rejectedPrefixes": 0,
+      "repairIterations": 2,
+      "apiRoundTrips": 3,
+      "outputTokens": 105,
+      "neuralDecisions": 105,
+      "compilerDecisions": 0,
+      "wallClockMs": 5530.531167,
+      "timeToFirstValidProgramMs": null,
+      "source": "export function main(): null {\n  import std/console\n  console.println(\"semantic compiler\")\n}\n",
+      "diagnostics": [
+        "E1019: Expected '*' after 'import' (only namespace imports supported) [span 3]"
+      ]
+    },
+    {
+      "taskId": "string-concat",
+      "mode": "semantic",
+      "streaming": true,
+      "success": true,
+      "compileAt1": true,
+      "functionalAt1": true,
+      "syntaxFailures": 0,
+      "semanticFailures": 0,
+      "functionalFailures": 0,
+      "rejectedChoices": 0,
+      "rejectedPrefixes": 0,
+      "repairIterations": 0,
+      "apiRoundTrips": 1,
+      "outputTokens": 100,
+      "neuralDecisions": 3,
+      "compilerDecisions": 0,
+      "wallClockMs": 8957.242875,
+      "timeToFirstValidProgramMs": 8957.241542,
+      "source": "import * as console from \"std/console\";\n\nexport function main(): null {\n  console.log((\"semantic \" + \"compiler\"));\n  return null;\n}\n",
+      "diagnostics": []
+    }
+  ]
+}

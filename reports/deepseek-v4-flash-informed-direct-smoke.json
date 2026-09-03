@@ -1,0 +1,100 @@
+{
+  "generatedAt": "2026-09-03T09:46:56.452Z",
+  "adapter": "openrouter",
+  "model": "deepseek/deepseek-v4-flash",
+  "streaming": true,
+  "taskPath": "/Users/egavrin/Documents/codex/2026-09-03/referenced-chatgpt-conversation-this-is-an/outputs/deal-semantic-generation/tasks/large-tasks.json",
+  "summary": {
+    "direct": {
+      "samples": 1,
+      "successes": 1,
+      "compileAt1": 0,
+      "functionalAt1": 0,
+      "syntaxFailures": 0,
+      "semanticFailures": 1,
+      "functionalFailures": 0,
+      "rejectedChoices": 0,
+      "rejectedPrefixes": 0,
+      "repairIterations": 1,
+      "apiRoundTrips": 2,
+      "outputTokens": 496,
+      "inputTokens": 1053,
+      "totalTokens": 1549,
+      "reasoningTokens": 0,
+      "apiCostUsd": 0.00016396182,
+      "neuralDecisionsPerSuccessfulProgram": 496,
+      "averageWallClockMs": 11622.812375,
+      "averageTimeToFirstValidProgramMs": 11458.976458
+    }
+  },
+  "byFamily": {
+    "physics-engine": {
+      "direct": {
+        "samples": 1,
+        "successes": 1,
+        "compileAt1": 0,
+        "functionalAt1": 0,
+        "syntaxFailures": 0,
+        "semanticFailures": 1,
+        "functionalFailures": 0,
+        "rejectedChoices": 0,
+        "rejectedPrefixes": 0,
+        "repairIterations": 1,
+        "apiRoundTrips": 2,
+        "outputTokens": 496,
+        "inputTokens": 1053,
+        "totalTokens": 1549,
+        "reasoningTokens": 0,
+        "apiCostUsd": 0.00016396182,
+        "neuralDecisionsPerSuccessfulProgram": 496,
+        "averageWallClockMs": 11622.812375,
+        "averageTimeToFirstValidProgramMs": 11458.976458
+      }
+    }
+  },
+  "results": [
+    {
+      "taskId": "physics-engine-1d-1",
+      "family": "physics-engine",
+      "level": "large",
+      "mode": "direct",
+      "streaming": true,
+      "success": true,
+      "compileAt1": false,
+      "functionalAt1": false,
+      "syntaxFailures": 0,
+      "semanticFailures": 1,
+      "functionalFailures": 0,
+      "rejectedChoices": 0,
+      "rejectedPrefixes": 0,
+      "repairIterations": 1,
+      "apiRoundTrips": 2,
+      "outputTokens": 496,
+      "inputTokens": 1053,
+      "totalTokens": 1549,
+      "reasoningTokens": 0,
+      "apiCostUsd": 0.00016396182,
+      "neuralDecisions": 496,
+      "compilerDecisions": 0,
+      "wallClockMs": 11622.812375,
+      "timeToFirstValidProgramMs": 11458.976458,
+      "source": "import * as console from \"std/console\";\n\nfunction physicsTick(pos: int, vel: int, acc: int, dt: int): table {\n    let newVel: int = vel + acc * dt;\n    let newPos: int = pos + vel * dt + (acc * dt * dt) / 2;\n    return { position: newPos, velocity: newVel };\n}\n\nexport function main(): null {\n    let pos: int = 0;\n    let vel: int = 3;\n    let acc: int = 1;\n    let deltaTime: int = 1;\n    let ticks: int = 0;\n    for (ticks = 0; ticks < 5; ticks = ticks + 1) {\n        let result: table = physicsTick(pos, vel, acc, deltaTime);\n        pos = result.position;\n        vel = result.velocity;\n    }\n    if (pos === 25 && vel === 8) {\n        console.log(\"physics-engine-1d-1:ok\");\n    } else {\n        console.log(\"physics-engine-1d-1:error\");\n    }\n    return null;\n}\n",
+      "diagnostics": [
+        "E3004: Unknown type 'float' [span 5]",
+        "E3004: Unknown type 'float' [span 5]",
+        "E3004: Unknown type 'float' [span 5]",
+        "E3004: Unknown type 'float' [span 5]",
+        "E3004: Unknown type 'float' [span 5]",
+        "E3004: Unknown type 'float' [span 5]",
+        "E3004: Unknown type 'float' [span 5]",
+        "E3004: Unknown type 'float' [span 5]",
+        "E3004: Unknown type 'float' [span 5]",
+        "E3004: Unknown type 'float' [span 5]",
+        "E3004: Unknown type 'float' [span 5]",
+        "E3004: Unknown type 'float' [span 5]",
+        "E3004: Unknown type 'float' [span 5]",
+        "E3004: Unknown type 'float' [span 5]"
+      ]
+    }
+  ]
+}
