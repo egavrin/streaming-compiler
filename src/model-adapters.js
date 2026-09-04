@@ -229,6 +229,29 @@ export class OpenAICompatibleModelAdapter extends ModelAdapter {
     }
   }
 
+  async completeTool({ messages, tools, toolChoice = "required" }) {
+    let name = "";
+    let argumentsText = "";
+    let usage = null;
+    for await (const event of this._stream({ messages, tools, tool_choice: toolChoice })) {
+      if (event.type === "tool_name") name = event.name;
+      else if (event.type === "tool_arguments") argumentsText += event.delta;
+      else if (event.type === "usage") usage = event;
+    }
+    if (!name) throw new Error("model response contained no tool name");
+    let args;
+    try {
+      args = JSON.parse(argumentsText);
+    } catch (error) {
+      const failure = new Error(`model returned malformed tool arguments for ${name}: ${error.message}`);
+      failure.kind = "transport";
+      failure.toolName = name;
+      failure.argumentsText = argumentsText;
+      throw failure;
+    }
+    return { name, args, usage };
+  }
+
   async *_stream(body) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(new Error(
@@ -294,6 +317,9 @@ export class OpenAICompatibleModelAdapter extends ModelAdapter {
             const delta = choice.delta ?? {};
             if (delta.content) yield { type: "text", delta: delta.content };
             for (const toolCall of delta.tool_calls ?? []) {
+              if (toolCall.function?.name) {
+                yield { type: "tool_name", name: toolCall.function.name };
+              }
               if (toolCall.function?.arguments) {
                 yield { type: "tool_arguments", delta: toolCall.function.arguments };
               }

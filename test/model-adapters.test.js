@@ -76,6 +76,29 @@ test("OpenAI-compatible adapter exposes choices before the tool JSON is complete
   ]);
 });
 
+test("generic tool completion keeps the transport envelope separate from compiler repair", async () => {
+  const encoder = new TextEncoder();
+  const chunks = [
+    'data: {"choices":[{"delta":{"tool_calls":[{"function":{"name":"apply_deal_changes","arguments":"{\\"operations\\":["}}]}}]}\n\n',
+    'data: {"choices":[{"delta":{"tool_calls":[{"function":{"arguments":"{\\"operation\\":\\"removeDeclaration\\",\\"targetId\\":\\"symbol\\"}]}"}}]}}],"usage":{"prompt_tokens":12,"completion_tokens":7}}\n\n',
+    "data: [DONE]\n\n",
+  ];
+  const adapter = new OpenAICompatibleModelAdapter({
+    apiKey: "test",
+    model: "test-model",
+    fetchImpl: async () => new Response(new ReadableStream({
+      start(controller) {
+        for (const chunk of chunks) controller.enqueue(encoder.encode(chunk));
+        controller.close();
+      },
+    }), { status: 200 }),
+  });
+  const result = await adapter.completeTool({ messages: [], tools: [] });
+  assert.equal(result.name, "apply_deal_changes");
+  assert.deepEqual(result.args.operations, [{ operation: "removeDeclaration", targetId: "symbol" }]);
+  assert.equal(result.usage.outputTokens, 7);
+});
+
 test("OpenAI-compatible structured output constrains the current choice enum", async () => {
   let requestBody;
   const encoder = new TextEncoder();
