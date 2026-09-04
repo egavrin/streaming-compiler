@@ -364,7 +364,7 @@ public final class CanonicalRefinementSession {
     private static Map<String, Object> transactionTool(
             String name, String description, List<Map<String, Object>> variants) {
         return tool(name, description, objectSchema(Map.of(
-                "operations", Map.of("type", "array", "minItems", 1, "items", Map.of("oneOf", variants)),
+                "operations", Map.of("type", "array", "minItems", 1, "items", Map.of("anyOf", variants)),
                 "final", Map.of("type", "boolean"))));
     }
 

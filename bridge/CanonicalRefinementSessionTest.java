@@ -113,6 +113,8 @@ public final class CanonicalRefinementSessionTest {
 
     private static void requireTypedConstants(CanonicalJson.Value value) {
         if (value instanceof CanonicalJson.Obj object) {
+            check(object.entries().stream().noneMatch(entry -> entry.key().equals("oneOf")),
+                    "DeepSeek tool schemas require anyOf rather than oneOf");
             boolean hasConst = object.entries().stream().anyMatch(entry -> entry.key().equals("const"));
             boolean hasType = object.entries().stream().anyMatch(entry -> entry.key().equals("type"));
             check(!hasConst || hasType, "provider tool-schema constants require an explicit type");
