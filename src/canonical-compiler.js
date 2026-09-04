@@ -31,6 +31,8 @@ export class CanonicalCompilerClient {
     const sources = [
       ...(await sourceFiles(join(this.dealRepo, "deal"), [join(this.dealRepo, "deal", "test")])),
       ...(await sourceFiles(join(this.dealUiRepo, "src", "main", "java"))),
+      join(ROOT, "java", "streaming", "compiler", "CanonicalRefinementSession.java"),
+      join(ROOT, "bridge", "CanonicalRefinementSessionTest.java"),
       bridge,
     ];
     const list = join(this.classes, "sources.txt");
