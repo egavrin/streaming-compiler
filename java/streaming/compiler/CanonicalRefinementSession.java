@@ -204,7 +204,7 @@ public final class CanonicalRefinementSession {
                     "source", Map.of("type", "string")));
             node.properties().keySet().forEach(property -> addIfAllowed(
                     operations, UiCompilerWorkspace.SET_PROPERTY, node.id(), Map.of(
-                            "property", Map.of("const", property),
+                            "property", constantString(property),
                             "expression", Map.of("type", "string"))));
         });
         return operations;
@@ -218,8 +218,8 @@ public final class CanonicalRefinementSession {
         if (!repairScopes.isEmpty() && repairScopes.stream().noneMatch(scope ->
                 scope.operation().equals(operation) && scope.ownerId().equals(id))) return;
         Map<String, Object> properties = new LinkedHashMap<>();
-        properties.put("operation", Map.of("const", operation));
-        properties.put("targetId", Map.of("const", id.value()));
+        properties.put("operation", constantString(operation));
+        properties.put("targetId", constantString(id.value()));
         properties.putAll(extra);
         target.add(objectSchema(properties));
     }
@@ -382,6 +382,10 @@ public final class CanonicalRefinementSession {
 
     private static Map<String, Object> enumSchema(List<String> values) {
         return Map.of("type", "string", "enum", values);
+    }
+
+    private static Map<String, Object> constantString(String value) {
+        return Map.of("type", "string", "const", value);
     }
 
     private static CanonicalJson.Value field(CanonicalJson.Obj object, String name) {

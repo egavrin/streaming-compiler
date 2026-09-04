@@ -56,6 +56,7 @@ public final class CanonicalRefinementSessionTest {
                 .findFirst().orElseThrow();
         var session = new CanonicalRefinementSession(
                 DEAL, UI, PACK, "./ui.pack", "Increment by two", 6, 2);
+        requireTypedConstants(CompilerProtocolJson.decode(session.nextRequestJson()));
         session.acceptToolCallJson("query_deal_node", CompilerProtocolJson.encode(Map.of(
                 "targetId", body.id().value())));
         String repairRequest = session.acceptToolCallJson("apply_deal_changes", operationArguments(Map.of(
@@ -108,6 +109,17 @@ public final class CanonicalRefinementSessionTest {
     private static boolean booleanField(CanonicalJson.Obj object, String name) {
         CanonicalJson.Value value = CompilerProtocolJson.field(object, name);
         return value instanceof CanonicalJson.Bool flag && flag.value();
+    }
+
+    private static void requireTypedConstants(CanonicalJson.Value value) {
+        if (value instanceof CanonicalJson.Obj object) {
+            boolean hasConst = object.entries().stream().anyMatch(entry -> entry.key().equals("const"));
+            boolean hasType = object.entries().stream().anyMatch(entry -> entry.key().equals("type"));
+            check(!hasConst || hasType, "provider tool-schema constants require an explicit type");
+            object.entries().forEach(entry -> requireTypedConstants(entry.value()));
+        } else if (value instanceof CanonicalJson.Arr array) {
+            array.items().forEach(CanonicalRefinementSessionTest::requireTypedConstants);
+        }
     }
 
     private static void check(boolean condition, String message) {
